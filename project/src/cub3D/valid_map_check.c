@@ -14,28 +14,24 @@
 
 static int	player_coordinate_init(t_game *game, char map, int x, int y)
 {
-	if (map == 'S')
-	{
-		game->player.dir_x = 0;
-		game->player.dir_y = 1;
-	}
-	else if (map == 'N')
-	{
-		game->player.dir_x = 0;
-		game->player.dir_y = -1;
-	}
-	else if (map == 'W')
-	{
-		game->player.dir_x = -1;
-		game->player.dir_y = 0;
-	}
+	const int	arr[4][2] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+	int			i;
+
+	i = -1;
+	if (map == 'N')
+		i = 0;
 	else if (map == 'E')
-	{
-		game->player.dir_x = 1;
-		game->player.dir_y = 0;
-	}
-	game->player.player_x = x;
-	game->player.player_y = y;
+		i = 1;
+	else if (map == 'S')
+		i = 2;
+	else if (map == 'W')
+		i = 3;
+	game->player.dir_x = arr[i][0];
+	game->player.dir_y = arr[i][1];
+	game->player.player_x = x + 0.5;
+	game->player.player_y = y + 0.5;
+	game->player.plane_x = arr[(i + 1) % 4][0] * 0.66;
+	game->player.plane_y = arr[(i + 1) % 4][1] * 0.66;
 	return (1);
 }
 
@@ -52,20 +48,20 @@ static int	map_form_check(t_game *game, char **map)
 		x = -1;
 		while (map[y][++x] && map[y][x] != '\n')
 		{
-			if (map[y][x] == '1' || map[y][x] == '0')
-				continue;
-			else if (((map[y][x] >= 9 && map[y][x] <= 13) || map[y][x] == 32))
-				continue;
-			else if (map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E' || map[y][x] == 'N')
+			if ((map[y][x] == '1' || map[y][x] == '0') || \
+		((map[y][x] >= 9 && map[y][x] <= 13) || map[y][x] == 32))
+				continue ;
+			else if (map[y][x] == 'S' || map[y][x] == 'W' \
+				|| map[y][x] == 'E' || map[y][x] == 'N')
+			{
 				p_c += player_coordinate_init(game, map[y][x], x, y);
-			if (map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E' || map[y][x] == 'N')
-				continue;
-			return (1);
+				map[y][x] = '0';
+			}
+			else
+				return (1);
 		}
-		if (p_c > 1)
-			return (1);
 	}
-	return (0);
+	return (p_c > 1);
 }
 
 static char	**map_copy(t_game *game, char **origin)
@@ -141,9 +137,9 @@ int	map_valid_check(t_game *game)
 		x = -1;
 		while (tmp_map[y][++x])
 		{
-			if (tmp_map[y][x] == '0')
-				if (map_coordinate_check(tmp_map, x, y))
-					return (error_print("Invalid map format\n"), free_split(copy_map), 1);
+			if ((tmp_map[y][x] == '0') && map_coordinate_check(tmp_map, x, y))
+				return (error_print("Invalid map format\n"), \
+				free_split(copy_map), 1);
 		}
 	}
 	free_split(game->info.map);

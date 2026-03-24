@@ -1,4 +1,4 @@
-CC = cc -c -Wall -Wextra -Werror -g
+CC = cc -c -Wall -Wextra -Werror
 NAME = cub3D.a
 
 INC = -I ../../include -I ../../../minilibx-linux
@@ -6,7 +6,7 @@ LIB = ../../library
 
 SRCS = \
 main.c map_file_read.c init.c error_print.c free_item.c map_file_read.c map_info_parse.c \
-utils.c valid_map_check.c
+utils.c valid_map_check.c event.c raycast.c rendering.c
 
 OBJS = $(SRCS:.c=.o)
 

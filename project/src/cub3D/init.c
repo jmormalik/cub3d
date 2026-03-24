@@ -6,18 +6,49 @@
 /*   By: jaemyu <jaemyu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:32:54 by jaehlee           #+#    #+#             */
-/*   Updated: 2026/03/03 14:51:08 by jaemyu           ###   ########.fr       */
+/*   Updated: 2026/03/24 11:21:56 by jaemyu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static int	map_allo(t_game *game, int h)
+static void	create_img(t_img *img)
 {
-	game->info.map = malloc(sizeof(char *) * (h + 1));
-	if (!game->info.map)
-		return (error_print("allocated error\n"), 1);
-	game->info.map[h] = NULL;
+	if (img->img)
+		img->img_ptr = mlx_get_data_addr \
+		(img->img, &img->bit, &img->line, &img->ed);
+}
+
+static void	mlx_img(t_game *game)
+{
+	game->s.img = mlx_xpm_file_to_image \
+	(game->mlx_ptr, game->info.so, &game->s.img_w, &game->s.img_h);
+	create_img(&(game->s));
+	game->w.img = mlx_xpm_file_to_image \
+	(game->mlx_ptr, game->info.we, &game->w.img_w, &game->w.img_h);
+	create_img(&(game->w));
+	game->e.img = mlx_xpm_file_to_image \
+	(game->mlx_ptr, game->info.ea, &game->e.img_w, &game->e.img_h);
+	create_img(&(game->e));
+	game->n.img = mlx_xpm_file_to_image \
+	(game->mlx_ptr, game->info.no, &game->n.img_w, &game->n.img_h);
+	create_img(&(game->n));
+}
+
+int	init_mlx(t_game *game)
+{
+	game->mlx_ptr = mlx_init();
+	if (!game->mlx_ptr)
+		return (1);
+	game->mlx_win = mlx_new_window(game->mlx_ptr, WIDTH, HEIGHT, "GAME");
+	if (!game->mlx_win)
+		return (1);
+	game->mlx_image = mlx_new_image(game->mlx_ptr, WIDTH, HEIGHT);
+	if (!game->mlx_image)
+		return (1);
+	mlx_img(game);
+	if (!game->s.img || !game->w.img || !game->e.img ||!game->n.img)
+		return (1);
 	return (0);
 }
 
@@ -32,13 +63,15 @@ int	height_init(char *path, t_game *game)
 	if (fd < 0)
 		return (error_print("fd error\n"), 1);
 	h = 0;
-	while ((line = get_next_line(fd)) != NULL)
+	line = get_next_line(fd);
+	while (line != NULL)
 	{
 		h++;
 		w = ft_strlen(line);
 		if (w > game->info.w)
 			game->info.w = ft_strlen(line);
 		free(line);
+		line = get_next_line(fd);
 	}
 	close(fd);
 	get_next_line(-1);
@@ -65,4 +98,11 @@ void	struct_init(t_game *game)
 	game->player.player_x = 0;
 	game->player.player_y = 0;
 	game->info.w = 0;
+	game->mlx_ptr = NULL;
+	game->mlx_image = NULL;
+	game->mlx_win = NULL;
+	game->e.img = NULL;
+	game->s.img = NULL;
+	game->n.img = NULL;
+	game->w.img = NULL;
 }

@@ -39,3 +39,8 @@ int	cub_atoi(const char *nptr)
 	return ((int)(value));
 }
 
+int	ft_close(void *game)
+{
+	free_game(game);
+	exit(0);
+}

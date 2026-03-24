@@ -12,8 +12,8 @@ LIBRARY = $(DIRECTORY)/library
 CUB3D_A = $(LIBRARY)/cub3D.a
 LIBFT_A = $(LIBRARY)/libft.a
 
-CC = cc -Wall -Wextra -Werror -g
-MLX_CC = -L./minilibx-linux -lmlx -lXext -lX11
+CC = cc -Wall -Wextra -Werror
+MLX_CC = -lm -L./minilibx-linux -lmlx -lXext -lX11
 
 MLX_DIR = ./minilibx-linux
 MLX_DIR_A = $(MLX_DIR)/libmlx_Linux.a

@@ -12,6 +12,29 @@
 
 #include "cub3d.h"
 
+int	dp_img(void *param)
+{
+	t_game		*game;
+
+	game = param;
+	if (game->update_flag == 1)
+	{
+		rayloop(game);
+		game->update_flag = 0;
+	}
+	usleep(100);
+	return (0);
+}
+
+int	main_loop(t_game *game)
+{
+	mlx_hook(game->mlx_win, 2, 1L << 0, ft_key_press, game);
+	mlx_hook(game->mlx_win, 17, 0, ft_close, game);
+	mlx_loop_hook(game->mlx_ptr, dp_img, game);
+	mlx_loop(game->mlx_ptr);
+	return (0);
+}
+
 int	operator(char *av, t_game *game)
 {
 	struct_init(game);
@@ -26,6 +49,8 @@ int	operator(char *av, t_game *game)
 		return (error_print("rgb value invalid\n"), 1);
 	if (map_valid_check(game))
 		return (1);
+	if (init_mlx(game))
+		return (error_print("mlx init failed\n"), 1);
 	return (0);
 }
 
@@ -37,11 +62,7 @@ int	main(int ac, char **av)
 		return (error_print("arguments invalid\n"), 1);
 	if (operator(av[1], &game))
 		return (free_game(&game), 1);
-
-	int		y = -1;
-	while (game.info.map[++y])
-	{
-		printf("%s\n", game.info.map[y]);
-	}
+	game.update_flag = 1;
+	main_loop(&game);
 	return (free_game(&game), 0);
 }

@@ -61,7 +61,7 @@ static int	map_form_check(t_game *game, char **map)
 				return (1);
 		}
 	}
-	return (p_c > 1);
+	return (p_c != 1);
 }
 
 static char	**map_copy(t_game *game, char **origin)

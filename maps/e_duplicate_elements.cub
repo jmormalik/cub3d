@@ -1,0 +1,11 @@
+SO ./imgs/b_m.xpm
+WE ./imgs/r_m.xpm
+EA ./imgs/y_m.xpm
+NO ./imgs/g_m.xpm
+NO ./imgs/g_m.xpm
+
+C 200,200,240
+
+1111111
+100N001
+1111111

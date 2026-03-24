@@ -100,11 +100,11 @@ static void	color_init(t_game *game, int i)
 		game->ray.offset = (unsigned int *)(game->ray.img_addr + \
 			(bit / 8) * (i + (WIDTH / 2)) + line * k);
 		if (k < game->ray.drawstart)
-			*game->ray.offset = game->info.ceiling.r + \
-				game->info.ceiling.g + game->info.ceiling.b;
+			*game->ray.offset = (game->info.ceiling.r << 16) | \
+				(game->info.ceiling.g << 8) | game->info.ceiling.b;
 		else if (k > game->ray.drawend)
-			*game->ray.offset = game->info.floor.r + \
-				game->info.floor.g + game->info.floor.b;
+			*game->ray.offset = (game->info.floor.r << 16) | \
+				(game->info.floor.g << 8) | game->info.floor.b;
 		else
 			*game->ray.offset = get_tex_color(game);
 	}	

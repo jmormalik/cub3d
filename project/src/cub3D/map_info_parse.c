@@ -25,9 +25,9 @@ int	rgb_parse(t_color *color, char *target)
 		i++;
 	if (i != 3)
 		return (free_split(str), 1);
-	color->r = cub_atoi(str[0]) * 16 * 16 * 16 * 16;
-	color->g = cub_atoi(str[1]) * 16 * 16;
-	color->b = cub_atoi(str[2]) * 1;
+	color->r = cub_atoi(str[0]);
+	color->g = cub_atoi(str[1]);
+	color->b = cub_atoi(str[2]);
 	free_split(str);
 	if (color->r < 0 || color->g < 0 || color->b < 0)
 		return (1);
@@ -50,11 +50,13 @@ static char	*data_extraction(char *target)
 	len = i;
 	while (start_str[len] && start_str[len] != '\n')
 		len++;
+	while (len > i && (target[len - 1] == '\r' || target[len - 1] == ' '))
+		len--;
 	ret = malloc(sizeof(char) * (len + 1));
 	if (!ret)
 		return (error_print("allocated error\n"), NULL);
 	ft_memmove(ret, start_str + i, len);
-	ret[len] = '\0';
+	ret[len - i] = '\0';
 	return (ret);
 }
 
